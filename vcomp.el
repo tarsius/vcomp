@@ -4,10 +4,10 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoulli.cc>
 ;; Created: 20081202
-;; Updated: 20081202
+;; Updated: 20090118
 ;; Version: 0.0.1
 ;; Homepage: https://github.com/tarsius/vcomp
-;; Keywords: 
+;; Keywords: versions
 
 ;; This file is not part of GNU Emacs.
 
@@ -34,6 +34,8 @@
 ;; Copyright (C) 2007, 2008 Tom Tromey <tromey@redhat.com>
 
 ;; Note: You shouldn't use this library yet - it has to be polished first.
+;; Note: I have just learned that such a library already existed before I
+;;       created this: `versions.el'.  Haven't checked it out yet.
 
 ;; TODO: Properly define what kinds of version string are supported.
 ;; TODO: Support chaining alpha etc.  Which combinations make sense?
@@ -90,6 +92,9 @@
     (if v2
 	(funcall pred -1 v2)
       (funcall pred 0 0))))
+
+;; TODO (defun vcomp-max (&rest versions))
+;; TODO (defun vcomp-min (&rest versions))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
