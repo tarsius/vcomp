@@ -46,29 +46,35 @@
 (defconst vcomp--regexp
   "^\\(^[0-9]+\\(\\.[0-9]+\\)*\\)\\([a-z]\\)?\\(_\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?\\(-r\\([0-9]+\\)\\)?$")
 
-(defun vcomp--intern (string)
-  "Convert version string STRING to a list of integers."
-  (when (string-match vcomp--regexp string)
-    (let ((num (mapcar #'string-to-int
-		       (split-string (match-string 1 string) "\\.")))
-	  (alp (match-string 3 string))
-	  (tag (match-string 5 string))
-	  (tnm (string-to-number (or (match-string 6 string) "0")))
-	  (rev (string-to-number (or (match-string 8 string) "0"))))
-      (list num (nconc (cond ((equal tag "alpha")
-			      (list  100 tnm))
-			     ((equal tag "beta")
-			      (list  101 tnm))
-			     ((equal tag "pre")
-			      (list  102 tnm))
-			     ((equal tag "rc")
-			      (list  103 tnm))
-			     ((equal tag nil)
-			      (list  104 tnm))
-			     ((equal tag "p")
-			      (list  105 tnm)))
-		       (list (if alp (string-to-char alp) 96))
-		       (list rev))))))
+(defun vcomp-version-p (version)
+  "Return t if VERSION is a valid version string."
+  (when (string-match-p vcomp--regexp version) t))
+
+(defun vcomp--intern (version)
+  "Convert version string VERSION to a list of integers."
+  ;; Don't use vcomp-version-p here as it doesn't change match data.
+  (if (string-match vcomp--regexp version)
+      (let ((num (mapcar #'string-to-int
+			 (split-string (match-string 1 version) "\\.")))
+	    (alp (match-string 3 version))
+	    (tag (match-string 5 version))
+	    (tnm (string-to-number (or (match-string 6 version) "0")))
+	    (rev (string-to-number (or (match-string 8 version) "0"))))
+	(list num (nconc (cond ((equal tag "alpha")
+				(list  100 tnm))
+			       ((equal tag "beta")
+				(list  101 tnm))
+			       ((equal tag "pre")
+				(list  102 tnm))
+			       ((equal tag "rc")
+				(list  103 tnm))
+			       ((equal tag nil)
+				(list  104 tnm))
+			       ((equal tag "p")
+				(list  105 tnm)))
+			 (list (if alp (string-to-char alp) 96))
+			 (list rev))))
+    (error "%S isn't a valid version string" version)))
 
 (defun vcomp-compare (v1 v2 pred)
   "Compare version strings V1 and V2 using PRED."
@@ -93,8 +99,19 @@
 	(funcall pred -1 v2)
       (funcall pred 0 0))))
 
-;; TODO (defun vcomp-max (&rest versions))
-;; TODO (defun vcomp-min (&rest versions))
+(defun vcomp-max (version &rest versions)
+  "Return largest of all the arguments (which must be version strings)."
+  (dolist (elt versions)
+    (when (vcomp-compare elt version '>)
+      (setq version elt)))
+  version)
+
+(defun vcomp-min (version &rest versions)
+  "Return smallest of all the arguments (which must be version strings)."
+  (dolist (elt versions)
+    (when (vcomp-compare elt version '<)
+      (setq version elt)))
+  version)
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
