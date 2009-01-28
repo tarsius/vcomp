@@ -2,10 +2,10 @@
 
 ;; Copyright (C) 2008 Jonas Bernoulli
 
-;; Author: Jonas Bernoulli <jonas@bernoulli.cc>
+;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20090118
-;; Version: 0.0.1
+;; Updated: 20090128
+;; Version: 0.0.2
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -44,7 +44,8 @@
 ;;; Code:
 
 (defconst vcomp--regexp
-  "^\\(^[0-9]+\\(\\.[0-9]+\\)*\\)\\([a-z]\\)?\\(_\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?\\(-r\\([0-9]+\\)\\)?$")
+  "^\\(^[0-9]+\\(\\.[0-9]+\\)*\\)\\([a-z]\\)?\
+\\(_\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?\\(-r\\([0-9]+\\)\\)?$")
 
 (defun vcomp-version-p (version)
   "Return t if VERSION is a valid version string."
