@@ -1,10 +1,10 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008 Jonas Bernoulli
+;; Copyright (C) 2008, 2009  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20090128
+;; Updated: 20090319
 ;; Version: 0.0.2
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
@@ -30,7 +30,7 @@
 
 ;; This supports version strings like for example "0.11a_rc3-r1".
 
-;; This is in part based on code in libary `package.el' which is:
+;; This is in part based on code in library `package.el' which is:
 ;; Copyright (C) 2007, 2008 Tom Tromey <tromey@redhat.com>
 
 ;; Note: You shouldn't use this library yet - it has to be polished first.
