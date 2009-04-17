@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20090319
-;; Version: 0.0.2
+;; Updated: 20090417
+;; Version: 0.0.3
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -113,6 +113,10 @@
     (when (vcomp-compare elt version '<)
       (setq version elt)))
   version)
+
+(defun vcomp< (v1 v2)
+  "Return t if first version string smaller than second."
+  (vcomp-compare v1 v2 '<))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
