@@ -5,7 +5,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
 ;; Updated: 20091214
-;; Version: 0.0.3+
+;; Version: 0.0.4
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -42,6 +42,8 @@
 ;; TODO: Do not require "_" before "alpha".  Good idea?
 
 ;;; Code:
+
+(require 'cl)
 
 (defconst vcomp--regexp
   (concat "^\\("
@@ -122,6 +124,32 @@
 (defun vcomp< (v1 v2)
   "Return t if first version string smaller than second."
   (vcomp-compare v1 v2 '<))
+
+(defun vcomp-max-link (page pattern)
+  "Return largest link from the webpage PAGE matching PATTERN.
+PAGE should be a webpage containing links to versioned files matching
+PATTERN.  If PATTERN contains \"%v\" then this is replaced with the value
+of `vcomp--regexp' (sans the leading ^ and trailing $).  The result is
+then used as part of a regular expression to find matching urls.  The
+first sub-expression of _PATTERN_ has to match the version string which is
+used for comparison.  The returned value is always a complete url even if
+PATTERN is relativ to PAGE (which is necessary when urls on PAGE are
+relative)."
+  (setq pattern
+	(replace-regexp-in-string "%v" (substring vcomp--regexp 1 -1)
+				  pattern nil t))
+  (let ((buffer (url-retrieve-synchronously page))
+	links url)
+    (with-current-buffer buffer
+      (goto-char (point-min))
+      (while (re-search-forward
+	      (format "<a.+href=\[\"']?\\(%s\\)[\"']?>" pattern) nil t)
+	(push (cons (match-string 1) (match-string 2)) links)))
+    (kill-buffer buffer)
+    (setq url (caar (sort* links 'vcomp-max :key 'cdr)))
+    (if (string-match ".+://" url)
+	url
+      (concat page url))))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
