@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20090417
-;; Version: 0.0.3
+;; Updated: 20091214
+;; Version: 0.0.3+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -35,7 +35,7 @@
 
 ;; Note: You shouldn't use this library yet - it has to be polished first.
 ;; Note: I have just learned that such a library already existed before I
-;;       created this: `versions.el'.  Haven't checked it out yet.
+;; created this: `versions.el'.  Haven't checked it out yet.
 
 ;; TODO: Properly define what kinds of version string are supported.
 ;; TODO: Support chaining alpha etc.  Which combinations make sense?
@@ -44,8 +44,13 @@
 ;;; Code:
 
 (defconst vcomp--regexp
-  "^\\(^[0-9]+\\(\\.[0-9]+\\)*\\)\\([a-z]\\)?\
-\\(_\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?\\(-r\\([0-9]+\\)\\)?$")
+  (concat "^\\("
+	  "\\([0-9]+\\(?:\\.[0-9]+\\)*\\)"
+	  "\\([a-z]\\)?"
+	  "\\(_\\(?:alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
+	  "\\(?:-r\\([0-9]+\\)\\)?"
+	  "\\)$")
+  "The regular expression used to compare version strings.")
 
 (defun vcomp-version-p (version)
   "Return t if VERSION is a valid version string."
@@ -56,11 +61,11 @@
   ;; Don't use vcomp-version-p here as it doesn't change match data.
   (if (string-match vcomp--regexp version)
       (let ((num (mapcar #'string-to-int
-			 (split-string (match-string 1 version) "\\.")))
+			 (split-string (match-string 2 version) "\\.")))
 	    (alp (match-string 3 version))
-	    (tag (match-string 5 version))
-	    (tnm (string-to-number (or (match-string 6 version) "0")))
-	    (rev (string-to-number (or (match-string 8 version) "0"))))
+	    (tag (match-string 4 version))
+	    (tnm (string-to-number (or (match-string 5 version) "0")))
+	    (rev (string-to-number (or (match-string 6 version) "0"))))
 	(list num (nconc (cond ((equal tag "alpha")
 				(list  100 tnm))
 			       ((equal tag "beta")
