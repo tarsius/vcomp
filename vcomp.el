@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20091214
-;; Version: 0.0.4
+;; Updated: 20100209
+;; Version: 0.0.4+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -122,7 +122,7 @@
   version)
 
 (defun vcomp< (v1 v2)
-  "Return t if first version string smaller than second."
+  "Return t if first version string is smaller than second."
   (vcomp-compare v1 v2 '<))
 
 (defun vcomp-max-link (page pattern)
