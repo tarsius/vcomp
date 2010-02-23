@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100209
-;; Version: 0.0.5
+;; Updated: 20100223
+;; Version: 0.0.6
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -127,6 +127,7 @@
 
 (defun vcomp-max-link (page pattern)
   "Return largest link matching PATTERN from the webpage PAGE.
+
 PAGE should be a webpage containing links to versioned files matching
 PATTERN.  If PATTERN contains \"%v\" then this is replaced with the value
 of `vcomp--regexp' (sans the leading ^ and trailing $).  The result is
@@ -147,7 +148,7 @@ relative)."
 	      nil t)
 	(push (cons (match-string 1) (match-string 2)) links)))
     (kill-buffer buffer)
-    (setq url (caar (sort* links 'vcomp-max :key 'cdr)))
+    (setq url (caar (last (sort* links 'vcomp< :key 'cdr))))
     (when (stringp url)
       (if (string-match ".+://" url)
 	  url
