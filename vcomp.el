@@ -1,11 +1,11 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008, 2009  Jonas Bernoulli
+;; Copyright (C) 2008, 2009, 2010  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100223
-;; Version: 0.0.6
+;; Updated: 20100305
+;; Version: 0.0.6+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -63,7 +63,8 @@
   ;; Don't use vcomp-version-p here as it doesn't change match data.
   (if (string-match vcomp--regexp version)
       (let ((num (mapcar #'string-to-int
-			 (split-string (match-string 2 version) "\\.")))
+			 (save-match-data
+			   (split-string (match-string 2 version) "\\."))))
 	    (alp (match-string 3 version))
 	    (tag (match-string 4 version))
 	    (tnm (string-to-number (or (match-string 5 version) "0")))
