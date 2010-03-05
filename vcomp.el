@@ -69,7 +69,8 @@
 	    (tag (match-string 4 version))
 	    (tnm (string-to-number (or (match-string 5 version) "0")))
 	    (rev (string-to-number (or (match-string 6 version) "0"))))
-	(list num (nconc (cond ((equal tag "alpha")
+	(list num (nconc (list (if alp (string-to-char alp) 96))
+			 (cond ((equal tag "alpha")
 				(list  100 tnm))
 			       ((equal tag "beta")
 				(list  101 tnm))
@@ -81,7 +82,6 @@
 				(list  104 tnm))
 			       ((equal tag "p")
 				(list  105 tnm)))
-			 (list (if alp (string-to-char alp) 96))
 			 (list rev))))
     (error "%S isn't a valid version string" version)))
 
