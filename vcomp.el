@@ -5,7 +5,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
 ;; Updated: 20100305
-;; Version: 0.0.6+
+;; Version: 0.0.7
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -39,7 +39,6 @@
 
 ;; TODO: Properly define what kinds of version string are supported.
 ;; TODO: Support chaining alpha etc.  Which combinations make sense?
-;; TODO: Do not require "_" before "alpha".  Good idea?
 
 ;;; Code:
 
@@ -49,7 +48,7 @@
   (concat "^\\("
 	  "\\([0-9]+\\(?:\\.[0-9]+\\)*\\)"
 	  "\\([a-z]\\)?"
-	  "\\(_\\(?:alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
+	  "\\(?:_?\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
 	  "\\(?:-r\\([0-9]+\\)\\)?"
 	  "\\)$")
   "The regular expression used to compare version strings.")
