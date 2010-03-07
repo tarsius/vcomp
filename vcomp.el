@@ -5,7 +5,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
 ;; Updated: 20100307
-;; Version: 0.0.7+
+;; Version: 0.0.8
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -30,15 +30,20 @@
 
 ;; This supports version strings like for example "0.11a_rc3-r1".
 
-;; This is in part based on code in library `package.el' which is:
+;; Have a look at the regular expression `vcomp--regexp' to determine
+;; what version string schemes are supported.  Note that the \"-rN\"
+;; suffix should not be used by authors of libraries but rather is for
+;; maintainers of packages (like ELPA or the Emacsmirror).
+
+;; Some related (or alternative) libraries and functions:
+;;
+;; - `version<' and related functions defined in `subr.el' distributed
+;;   with Emacs, or stand-alone as `versions.el'.
+;; - `inversion' which is part of Cedet and therefor included in recent
+;;   versions of Emacs.
+
+;; This package is in part based on code from `package.el' which is:
 ;; Copyright (C) 2007, 2008 Tom Tromey <tromey@redhat.com>
-
-;; Note: You shouldn't use this library yet - it has to be polished first.
-;; Note: I have just learned that such a library already existed before I
-;; created this: `versions.el'.  Haven't checked it out yet.
-
-;; TODO: Properly define what kinds of version string are supported.
-;; TODO: Support chaining alpha etc.  Which combinations make sense?
 
 ;;; Code:
 
