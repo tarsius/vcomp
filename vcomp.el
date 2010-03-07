@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100305
-;; Version: 0.0.7
+;; Updated: 20100307
+;; Version: 0.0.7+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -46,7 +46,7 @@
 
 (defconst vcomp--regexp
   (concat "^\\("
-	  "\\([0-9]+\\(?:\\.[0-9]+\\)*\\)"
+	  "\\([0-9]+\\(?:[-_.][0-9]+\\)*\\)"
 	  "\\([a-z]\\)?"
 	  "\\(?:_?\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
 	  "\\(?:-r\\([0-9]+\\)\\)?"
@@ -63,7 +63,7 @@
   (if (string-match vcomp--regexp version)
       (let ((num (mapcar #'string-to-int
 			 (save-match-data
-			   (split-string (match-string 2 version) "\\."))))
+			   (split-string (match-string 2 version) "[-_.]"))))
 	    (alp (match-string 3 version))
 	    (tag (match-string 4 version))
 	    (tnm (string-to-number (or (match-string 5 version) "0")))
