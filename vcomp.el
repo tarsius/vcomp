@@ -5,7 +5,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
 ;; Updated: 20100307
-;; Version: 0.0.8
+;; Version: 0.0.9
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -129,6 +129,25 @@
 (defun vcomp< (v1 v2)
   "Return t if first version string is smaller than second."
   (vcomp-compare v1 v2 '<))
+
+(defun vcomp-normalize (version)
+  "Normalize VERSION which has to be a valid version string."
+  (if (string-match vcomp--regexp version)
+      (let ((num (match-string 2 version))
+	    (alp (match-string 3 version))
+	    (tag (match-string 4 version))
+	    (tnm (match-string 5 version))
+	    (rev (match-string 6 version)))
+	(concat (save-match-data
+		  (replace-regexp-in-string "[-_]" "." num))
+		(when alp
+		  (downcase alp))
+		(when tag
+		  (concat "_" (downcase tag)))
+		(match-string 5 version)
+		(when rev
+		  (concat "-r" rev))))
+    (error "%S isn't a valid version string" version)))
 
 (defun vcomp-max-link (page pattern)
   "Return largest link matching PATTERN from the webpage PAGE.
