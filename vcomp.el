@@ -62,13 +62,16 @@
   "Return t if VERSION is a valid version string."
   (when (string-match-p vcomp--regexp version) t))
 
-(defun vcomp--intern (version &optional prefix)
+(defun vcomp--intern (version &optional prefix noerror)
   "Convert version string VERSION to a list of integers.
 
 If optional PREFIX is non-nil it is a partial regular expression which
 matches a prefix VERSION may (but does not need to) begin with, like e.g.
 a package name.  PREFIX must not begin with ^ (unless you want to
-literally match it) or contain any non-shy grouping constructs."
+literally match it) or contain any non-shy grouping constructs.
+
+If VERSION cannot be converted an error is raised unless optional NOERROR
+is non-nil in which case nil is returned."
   (if (string-match (if prefix
 			(concat "^" prefix (substring vcomp--regexp 1))
 		      vcomp--regexp)
@@ -99,7 +102,8 @@ literally match it) or contain any non-shy grouping constructs."
 			       ((equal tag "p")
 				(list  105 tnm)))
 			 (list rev))))
-    (error "%S isn't a valid version string" version)))
+    (unless noerror
+      (error "%S isn't a valid version string" version))))
 
 (defun vcomp-compare (v1 v2 pred)
   "Compare version strings V1 and V2 using PRED."
