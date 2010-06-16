@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100307
-;; Version: 0.0.9
+;; Updated: 20100616
+;; Version: 0.0.9+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -73,7 +73,12 @@
 	    (tag (match-string 4 version))
 	    (tnm (string-to-number (or (match-string 5 version) "0")))
 	    (rev (string-to-number (or (match-string 6 version) "0"))))
-	(list num (nconc (list (if alp (string-to-char alp) 96))
+	(list num (nconc (list (if (not alp)
+				   96
+				 (setq alp (string-to-char alp))
+				 (if (< alp 97)
+				     (+ alp 32)
+				   alp)))
 			 (cond ((equal tag "alpha")
 				(list  100 tnm))
 			       ((equal tag "beta")
