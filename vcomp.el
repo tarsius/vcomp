@@ -146,6 +146,10 @@ is non-nil in which case nil is returned."
   "Return t if first version string is smaller than second."
   (vcomp-compare v1 v2 '<))
 
+(defun vcomp> (v1 v2)
+  "Return t if first version string is bigger than second."
+  (vcomp-compare v1 v2 '>))
+
 (defun vcomp-normalize (version)
   "Normalize VERSION which has to be a valid version string."
   (if (string-match vcomp--regexp version)
