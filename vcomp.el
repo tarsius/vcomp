@@ -169,6 +169,52 @@ is non-nil in which case nil is returned."
 		  (concat "-r" rev))))
     (error "%S isn't a valid version string" version)))
 
+(defun vcomp--prefix-regexp (&optional name)
+  (concat "\\(?:\\(?:"
+	  (when name
+	    (format "%s\\|" name))
+	  "v\\(?:ersion\\)?\\|r\\(?:elease\\)"
+	  "?\\)[-_]?\\)?"))
+
+(defun vcomp--reverse-regexp (version &optional prefix)
+  (let* ((val (vcomp--intern version))
+	 (num (nth 0 val))
+	 (rst (nth 1 val))
+	 (alp (nth 0 rst))
+	 (tag (nth 1 rst))
+	 (tnm (nth 2 rst))
+	 (rev (nth 3 rst)))
+    (concat "^"
+	    (when prefix
+	      (vcomp--prefix-regexp prefix))
+	    (mapconcat (lambda (elt)
+			 (concat "0*" (int-to-string elt)))
+		       num "[-_.]")
+	    (when (> alp 96)
+	      (concat "["
+		      (char-to-string alp)
+		      (char-to-string (- alp 32))
+		      "]"))
+	    (case tag
+	      (100 "_?alpha")
+	      (101 "_?beta")
+	      (102 "_?pre")
+	      (103 "_?rc")
+	      (104 nil)
+	      (105 "_?p"))
+	    (cond ((= tag 104) nil)
+		  ((= tnm 0) "0?")
+		  (t (int-to-string tnm)))
+	    (when (> rev 0)
+	      (concat "-r"))
+	    "$")))
+
+(defun vcomp-reverse-match (version strings &optional prefix)
+  (setq version (vcomp--reverse-regexp version prefix))
+  (car (member* version strings
+		:test (lambda (version elt)
+			(string-match version elt)))))
+
 (defun vcomp-max-link (page pattern)
   "Return largest link matching PATTERN from the webpage PAGE.
 
