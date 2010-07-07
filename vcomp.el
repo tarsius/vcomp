@@ -5,7 +5,7 @@
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
 ;; Updated: 20100707
-;; Version: 0.0.9+
+;; Version: 0.0.10
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -170,11 +170,35 @@ is non-nil in which case nil is returned."
     (error "%S isn't a valid version string" version)))
 
 (defun vcomp--prefix-regexp (&optional name)
-  (concat "\\(?:\\(?:"
+  (concat "^\\(?:\\(?:"
 	  (when name
 	    (format "%s\\|" name))
 	  "v\\(?:ersion\\)?\\|r\\(?:elease\\)"
 	  "?\\)[-_]?\\)?"))
+
+(defun vcomp-prefixed-version-p (string &optional prefix)
+  "Return non-nil if STRING is a valid but possibly prefixed version string.
+
+The returned value is the normalized part of STRING which is a valid
+version string.
+
+If optional PREFIX is non-nil it has to be a string.  If it begin with
+\"^\" it is considered a partial regexp.  It must not end with \"$\" and may
+only contain *shy* groups.  In this case STRING is matched against:
+
+  (concat PREFIX (substring vcomp--regexp 1))
+
+Otherwise if PREFIX is nil or does not begin with \"^\" the function
+`vcomp--prefix-regexp' is used to create the prefix regexp.  In this
+case STRING is matched against:
+
+  (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))"
+  (when (string-match (concat (if (and prefix (string-match-p "^^" prefix))
+				  prefix
+				(vcomp--prefix-regexp prefix))
+			      (substring vcomp--regexp 1))
+		      string)
+    (vcomp-normalize (match-string 1 string))))
 
 (defun vcomp--reverse-regexp (version &optional prefix)
   (let* ((val (vcomp--intern version))
