@@ -4,7 +4,7 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100616
+;; Updated: 20100707
 ;; Version: 0.0.9+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
@@ -58,9 +58,9 @@
 	  "\\)$")
   "The regular expression used to compare version strings.")
 
-(defun vcomp-version-p (version)
-  "Return t if VERSION is a valid version string."
-  (when (string-match-p vcomp--regexp version) t))
+(defun vcomp-version-p (string)
+  "Return t if STRING is a valid version string."
+  (when (string-match-p vcomp--regexp string) t))
 
 (defun vcomp--intern (version &optional prefix noerror)
   "Convert version string VERSION to a list of integers.
