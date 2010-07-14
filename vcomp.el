@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100707
-;; Version: 0.0.10
+;; Updated: 20100714
+;; Version: 0.0.11
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -253,20 +253,24 @@ relative)."
   (setq pattern
 	(replace-regexp-in-string "%v" (substring vcomp--regexp 1 -1)
 				  pattern nil t))
-  (let ((buffer (url-retrieve-synchronously page))
+  (let ((buffer (condition-case nil
+		    (url-retrieve-synchronously page)
+		  (error nil)))
 	links url)
-    (with-current-buffer buffer
-      (goto-char (point-min))
-      (while (re-search-forward
-	      (format "<a.+[^>]*?href=\[\"']?\\(%s\\)[\"']?[^>]*?>" pattern)
-	      nil t)
-	(push (cons (match-string 1) (match-string 2)) links)))
-    (kill-buffer buffer)
-    (setq url (caar (last (sort* links 'vcomp< :key 'cdr))))
-    (when (stringp url)
-      (if (string-match ".+://" url)
-	  url
-	(concat (replace-regexp-in-string "[^/]+$" "" page) url)))))
+    (when buffer
+      (with-current-buffer buffer
+	(goto-char (point-min))
+	(while (re-search-forward
+		(format "<a.+[^>]*?href=\[\"']?\\(%s\\)[\"']?[^>]*?>"
+			pattern)
+		nil t)
+	  (push (cons (match-string 1) (match-string 2)) links)))
+      (kill-buffer buffer)
+      (setq url (caar (last (sort* links 'vcomp< :key 'cdr))))
+      (when (stringp url)
+	(if (string-match ".+://" url)
+	    url
+	  (concat (replace-regexp-in-string "[^/]+$" "" page) url))))))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
