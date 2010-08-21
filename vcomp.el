@@ -65,7 +65,7 @@
   (when (string-match-p vcomp--regexp string) t))
 
 (defun vcomp--intern (version &optional prefix noerror)
-  "Convert version string VERSION to a list of integers.
+  "Convert version string VERSION to a list of two lists of integers.
 
 If optional PREFIX is non-nil it is a partial regular expression which
 matches a prefix VERSION may (but does not need to) begin with, like e.g.
@@ -152,7 +152,7 @@ is non-nil in which case nil is returned."
   (vcomp-compare v1 v2 '<))
 
 (defun vcomp> (v1 v2)
-  "Return t if first version string is bigger than second."
+  "Return t if first version string is greater than second."
   (vcomp-compare v1 v2 '>))
 
 (defun vcomp-normalize (version)
