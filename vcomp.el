@@ -109,8 +109,11 @@ is non-nil in which case nil is returned."
 
 (defun vcomp-compare (v1 v2 pred)
   "Compare version strings V1 and V2 using PRED."
-  (setq v1 (vcomp--intern v1))
-  (setq v2 (vcomp--intern v2))
+  (vcomp--compare-interned (vcomp--intern v1)
+			   (vcomp--intern v2)
+			   pred))
+
+(defun vcomp--compare-interned (v1 v2 pred)
   (let ((l1 (length (car v1)))
 	(l2 (length (car v2))))
     (cond ((> l1 l2)
