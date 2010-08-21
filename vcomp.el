@@ -4,8 +4,8 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20100714
-;; Version: 0.0.11
+;; Updated: 20100822
+;; Version: 0.0.11+
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -48,6 +48,8 @@
 ;;; Code:
 
 (require 'cl)
+
+;;; Regular Versions.
 
 (defconst vcomp--regexp
   (concat "^\\("
@@ -169,6 +171,8 @@ is non-nil in which case nil is returned."
 		  (concat "-r" rev))))
     (error "%S isn't a valid version string" version)))
 
+;;; Prefixed Versions.
+
 (defun vcomp--prefix-regexp (&optional name)
   (concat "^\\(?:\\(?:"
 	  (when name
@@ -238,6 +242,8 @@ case STRING is matched against:
   (car (member* version strings
 		:test (lambda (version elt)
 			(string-match version elt)))))
+
+;;; Version Links.
 
 (defun vcomp-max-link (page pattern)
   "Return largest link matching PATTERN from the webpage PAGE.
