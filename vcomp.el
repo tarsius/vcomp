@@ -1,11 +1,11 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008, 2009, 2010  Jonas Bernoulli
+;; Copyright (C) 2008, 2009, 2010, 2011  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20101214
-;; Version: 0.1.0
+;; Updated: 20110103
+;; Version: 0.1.1
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -245,63 +245,6 @@ case STRING is matched against:
   (car (member* version strings
 		:test (lambda (version elt)
 			(string-match version elt)))))
-
-;;; Revisions.
-
-(defconst vcomp--revision-regexp
-  (concat "^\\([^~+]+\\)"
-	  "\\(?:~\\([0-9]+\\)\\)?"
-	  "\\(?:\\+\\([0-9]+\\)\\)?$"))
-
-(defun vcomp--intern-revision (revision)
-  "Convert revision string REVISION to a list of two lists of integers."
-  (string-match vcomp--revision-regexp revision)
-  (let ((regular (match-string 1 revision))
-	(behind  (match-string 2 revision))
-	(ahead   (match-string 3 revision))
-	vendor version)
-    (cond ((vcomp-version-p regular)
-	   (setq vendor 0 version (vcomp--intern regular)))
-	  (t
-	   (setq vendor 1 version (vcomp--intern "0"))))
-    (list (cons vendor (car version))
-	  (nconc (cadr version)
-		 (list (- 1000 (if behind (string-to-number behind) 0))
-		       (if ahead (string-to-number ahead) 0))))))
-
-(defun vcomp-compare-revisions (r1 r2 pred)
-  "Compare revision strings R1 and R2 using PRED.
-
-Revisions are similar to regular versions except that they may optionally
-be followed by suffixes indicating whether the revision is behind and/or
-ahead of the version without the suffix(es) and that the version part does
-not have to be a regular version string; most strings are valid here.
-
-Such revision strings are useful e.g. when using a version control system.
-In this case the suffixes can be used to determine whether an untagged
-revision is behind and/or ahead of another revision which may be tagged
-with a version string.
-
-The suffixes are integers prefixed with \"~\" or \"+\" for the behind and
-ahead suffix respectively.  If both suffixes are specified the behind
-suffix has to be specified before the ahead suffix; when comparing two
-revisions the ahead suffix is ignored unless the version part and the
-behind suffix part are equal - in other words the two suffixes are not
-combined for comparison but are compared in order.
-
-The version part when it is not a regular version string may be any
-string that does not contain \"~\" or \"+\"."
-  (vcomp--compare-interned (vcomp--intern-revision r1)
-			   (vcomp--intern-revision r2)
-			   pred))
-
-(defun vcomp-revision< (r1 r2)
-  "Return t if first revision string is smaller than the second."
-  (vcomp-compare-revisions r1 r2 '<))
-
-(defun vcomp-revision> (r1 r2)
-  "Return t if first revision string is greater than the second."
-  (vcomp-compare-revisions r1 r2 '>))
 
 ;;; Version Links.
 
