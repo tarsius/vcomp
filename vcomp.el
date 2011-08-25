@@ -4,8 +4,7 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Updated: 20110103
-;; Version: 0.1.1
+;; Version: 0.1.1-git
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -248,38 +247,53 @@ case STRING is matched against:
 
 ;;; Version Links.
 
-(defun vcomp-max-link (page pattern)
-  "Return largest link matching PATTERN from the webpage PAGE.
+(defun vcomp-max-link (page pattern &optional prefix)
+  "Return the url to the file with the greatest version linked from PAGE.
 
-PAGE should be a webpage containing links to versioned files matching
-PATTERN.  If PATTERN contains \"%v\" then this is replaced with the value
-of `vcomp--regexp' (sans the leading ^ and trailing $).  The result is
-then used as part of a regular expression to find matching urls.  The
-first sub-expression of _PATTERN_ has to match the version string which is
-used for comparison.  The returned value is always a complete url even if
-PATTERN is relativ to PAGE (which is necessary when urls on PAGE are
-relative)."
-  (setq pattern
-	(replace-regexp-in-string "%v" (substring vcomp--regexp 1 -1)
-				  pattern nil t))
-  (let ((buffer (condition-case nil
+Download PAGE and search it for links to versioned files matching a
+generated regexp and return the full url of the link whose version part
+is the greatest.  If PAGE can not be retrieved or no matching href can
+be found return nil.
+
+PATTERN is used as the first subexpression of that regexp and has to
+match the value of the href attributes.  PATTERN itself has to contain
+one subexpression which has to match a valid version string.  If PATTERN
+contains %v this is the case as %v is replaced by the value of
+`vcomp--regexp' sans the leading ^ and trailing $.
+
+Among all matches the one whose match for the version-subexpression is
+the greatest is determined and a complete url for that match is returned.
+
+If the href-subexpression is a complete url that is returned otherwise
+a complete url is created by prepending the href-expression with one of
+the following strings:
+
+* If optional PREFIX is non-nil use that,
+* or if PAGE does not end with / use it sans the last part,
+* else use the complete PAGE."
+  (let ((regexp (format
+		 "<a[^>]+href=[\"']?\\(%s\\)[\"']?[^>]*>"
+		 (replace-regexp-in-string
+		  "%v" (substring vcomp--regexp 1 -1) pattern nil t)))
+	(buffer (condition-case nil
 		    (url-retrieve-synchronously page)
 		  (error nil)))
-	links url)
+	matches)
     (when buffer
       (with-current-buffer buffer
 	(goto-char (point-min))
-	(while (re-search-forward
-		(format "<a.+[^>]*?href=\[\"']?\\(%s\\)[\"']?[^>]*?>"
-			pattern)
-		nil t)
-	  (push (cons (match-string 1) (match-string 2)) links)))
+	(while (re-search-forward regexp nil t)
+	  (push (cons (match-string 1) (match-string 2)) matches)))
       (kill-buffer buffer)
-      (setq url (caar (last (sort* links 'vcomp< :key 'cdr))))
-      (when (stringp url)
-	(if (string-match ".+://" url)
-	    url
-	  (concat (replace-regexp-in-string "[^/]+$" "" page) url))))))
+      (setq href (caar (last (sort* matches 'vcomp< :key 'cdr))))
+      (cond ((not href)
+	     nil)
+	    ((string-match ".+://" href)
+	     href)
+	    (prefix
+	     (concat prefix href))
+	    (t
+	     (concat (replace-regexp-in-string "[^/]+$" "" page) href))))))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
