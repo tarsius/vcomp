@@ -1,10 +1,10 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008, 2009, 2010, 2011  Jonas Bernoulli
+;; Copyright (C) 2008-2011  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Version: 0.1.1-git
+;; Version: 0.1.2
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -25,14 +25,14 @@
 
 ;;; Commentary:
 
-;; Compare version strings.
+;; Compare version strings.  What is a valid version string is defined
+;; jointly by the regular expression stored in variable `vcomp--regexp'
+;; and the function `vcomp--intern'.
 
-;; This supports version strings like for example "0.11a_rc3-r1".
-
-;; Have a look at the regular expression `vcomp--regexp' to determine
-;; what version string schemes are supported.  Note that the \"-rN\"
-;; suffix should not be used by authors of libraries but rather is for
-;; maintainers of packages (like ELPA or the Emacsmirror).
+;; Even crazy version strings like "0.11a_rc3-r1" are supported.  But
+;; note that you shouldn't go crazy just because you can and that the
+;; \"-rN\" suffix while valid really is reserved for package maintainers
+;; like ELPA or the Emacsmirror and should not be used by library authors.
 
 ;; Some related (or alternative) libraries and functions:
 ;;
@@ -40,9 +40,8 @@
 ;;   with Emacs, or stand-alone as `versions.el'.
 ;; - `inversion' which is part of Cedet and therefor included in recent
 ;;   versions of Emacs.
-
-;; This package is in part based on code from `package.el' which is:
-;; Copyright (C) 2007, 2008 Tom Tromey <tromey@redhat.com>
+;; - `package.el' also contains some version handling code which this
+;;   package was originally based on.
 
 ;;; Code:
 
