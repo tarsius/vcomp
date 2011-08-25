@@ -4,7 +4,7 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Version: 0.1.2
+;; Version: 0.1.3
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -291,8 +291,10 @@ the following strings:
 	     href)
 	    (prefix
 	     (concat prefix href))
+	    ((string-match ".+://.+/" page)
+	     (concat (replace-regexp-in-string "[^/]+$" "" page) href))
 	    (t
-	     (concat (replace-regexp-in-string "[^/]+$" "" page) href))))))
+	     (concat page "/" href))))))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
