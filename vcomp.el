@@ -4,7 +4,7 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Version: 0.1.3
+;; Version: 0.1.3-git
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -243,58 +243,6 @@ case STRING is matched against:
   (car (member* version strings
 		:test (lambda (version elt)
 			(string-match version elt)))))
-
-;;; Version Links.
-
-(defun vcomp-max-link (page pattern &optional prefix)
-  "Return the url to the file with the greatest version linked from PAGE.
-
-Download PAGE and search it for links to versioned files matching a
-generated regexp and return the full url of the link whose version part
-is the greatest.  If PAGE can not be retrieved or no matching href can
-be found return nil.
-
-PATTERN is used as the first subexpression of that regexp and has to
-match the value of the href attributes.  PATTERN itself has to contain
-one subexpression which has to match a valid version string.  If PATTERN
-contains %v this is the case as %v is replaced by the value of
-`vcomp--regexp' sans the leading ^ and trailing $.
-
-Among all matches the one whose match for the version-subexpression is
-the greatest is determined and a complete url for that match is returned.
-
-If the href-subexpression is a complete url that is returned otherwise
-a complete url is created by prepending the href-expression with one of
-the following strings:
-
-* If optional PREFIX is non-nil use that,
-* or if PAGE does not end with / use it sans the last part,
-* else use the complete PAGE."
-  (let ((regexp (format
-		 "<a[^>]+href=[\"']?\\(%s\\)[\"']?[^>]*>"
-		 (replace-regexp-in-string
-		  "%v" (substring vcomp--regexp 1 -1) pattern nil t)))
-	(buffer (condition-case nil
-		    (url-retrieve-synchronously page)
-		  (error nil)))
-	matches)
-    (when buffer
-      (with-current-buffer buffer
-	(goto-char (point-min))
-	(while (re-search-forward regexp nil t)
-	  (push (cons (match-string 1) (match-string 2)) matches)))
-      (kill-buffer buffer)
-      (setq href (caar (last (sort* matches 'vcomp< :key 'cdr))))
-      (cond ((not href)
-	     nil)
-	    ((string-match ".+://" href)
-	     href)
-	    (prefix
-	     (concat prefix href))
-	    ((string-match ".+://.+/" page)
-	     (concat (replace-regexp-in-string "[^/]+$" "" page) href))
-	    (t
-	     (concat page "/" href))))))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
