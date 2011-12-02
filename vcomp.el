@@ -4,7 +4,7 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Version: 0.1.3-git
+;; Version: 0.2.0
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -204,45 +204,6 @@ case STRING is matched against:
 			      (substring vcomp--regexp 1))
 		      string)
     (vcomp-normalize (match-string 1 string))))
-
-(defun vcomp--reverse-regexp (version &optional prefix)
-  (let* ((val (vcomp--intern version))
-	 (num (nth 0 val))
-	 (rst (nth 1 val))
-	 (alp (nth 0 rst))
-	 (tag (nth 1 rst))
-	 (tnm (nth 2 rst))
-	 (rev (nth 3 rst)))
-    (concat "^"
-	    (when prefix
-	      (vcomp--prefix-regexp prefix))
-	    (mapconcat (lambda (elt)
-			 (concat "0*" (int-to-string elt)))
-		       num "[-_.]")
-	    (when (> alp 96)
-	      (concat "["
-		      (char-to-string alp)
-		      (char-to-string (- alp 32))
-		      "]"))
-	    (case tag
-	      (100 "_?alpha")
-	      (101 "_?beta")
-	      (102 "_?pre")
-	      (103 "_?rc")
-	      (104 nil)
-	      (105 "_?p"))
-	    (cond ((= tag 104) nil)
-		  ((= tnm 0) "0?")
-		  (t (int-to-string tnm)))
-	    (when (> rev 0)
-	      (concat "-r"))
-	    "$")))
-
-(defun vcomp-reverse-match (version strings &optional prefix)
-  (setq version (vcomp--reverse-regexp version prefix))
-  (car (member* version strings
-		:test (lambda (version elt)
-			(string-match version elt)))))
 
 (provide 'vcomp)
 ;;; vcomp.el ends here
