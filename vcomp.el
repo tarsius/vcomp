@@ -51,11 +51,11 @@
 
 (defconst vcomp--regexp
   (concat "^\\("
-	  "\\([0-9]+\\(?:[-_.][0-9]+\\)*\\)"
-	  "\\([a-z]\\)?"
-	  "\\(?:_?\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
-	  "\\(?:-r\\([0-9]+\\)\\)?"
-	  "\\)$")
+          "\\([0-9]+\\(?:[-_.][0-9]+\\)*\\)"
+          "\\([a-z]\\)?"
+          "\\(?:_?\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
+          "\\(?:-r\\([0-9]+\\)\\)?"
+          "\\)$")
   "The regular expression used to compare version strings.")
 
 (defun vcomp-version-p (string)
@@ -73,62 +73,62 @@ literally match it) or contain any non-shy grouping constructs.
 If VERSION cannot be converted an error is raised unless optional NOERROR
 is non-nil in which case nil is returned."
   (if (string-match (if prefix
-			(concat "^" prefix (substring vcomp--regexp 1))
-		      vcomp--regexp)
-		    version)
+                        (concat "^" prefix (substring vcomp--regexp 1))
+                      vcomp--regexp)
+                    version)
       (let ((num (mapcar #'string-to-int
-			 (save-match-data
-			   (split-string (match-string 2 version) "[-_.]"))))
-	    (alp (match-string 3 version))
-	    (tag (match-string 4 version))
-	    (tnm (string-to-number (or (match-string 5 version) "0")))
-	    (rev (string-to-number (or (match-string 6 version) "0"))))
-	(list num (nconc (list (if (not alp)
-				   96
-				 (setq alp (string-to-char alp))
-				 (if (< alp 97)
-				     (+ alp 32)
-				   alp)))
-			 (cond ((equal tag "alpha")
-				(list  100 tnm))
-			       ((equal tag "beta")
-				(list  101 tnm))
-			       ((equal tag "pre")
-				(list  102 tnm))
-			       ((equal tag "rc")
-				(list  103 tnm))
-			       ((equal tag nil)
-				(list  104 tnm))
-			       ((equal tag "p")
-				(list  105 tnm)))
-			 (list rev))))
+                         (save-match-data
+                           (split-string (match-string 2 version) "[-_.]"))))
+            (alp (match-string 3 version))
+            (tag (match-string 4 version))
+            (tnm (string-to-number (or (match-string 5 version) "0")))
+            (rev (string-to-number (or (match-string 6 version) "0"))))
+        (list num (nconc (list (if (not alp)
+                                   96
+                                 (setq alp (string-to-char alp))
+                                 (if (< alp 97)
+                                     (+ alp 32)
+                                   alp)))
+                         (cond ((equal tag "alpha")
+                                (list  100 tnm))
+                               ((equal tag "beta")
+                                (list  101 tnm))
+                               ((equal tag "pre")
+                                (list  102 tnm))
+                               ((equal tag "rc")
+                                (list  103 tnm))
+                               ((equal tag nil)
+                                (list  104 tnm))
+                               ((equal tag "p")
+                                (list  105 tnm)))
+                         (list rev))))
     (unless noerror
       (error "%S isn't a valid version string" version))))
 
 (defun vcomp-compare (v1 v2 pred)
   "Compare version strings V1 and V2 using PRED."
   (vcomp--compare-interned (vcomp--intern v1)
-			   (vcomp--intern v2)
-			   pred))
+                           (vcomp--intern v2)
+                           pred))
 
 (defun vcomp--compare-interned (v1 v2 pred)
   (let ((l1 (length (car v1)))
-	(l2 (length (car v2))))
+        (l2 (length (car v2))))
     (cond ((> l1 l2)
-	   (nconc (car v2) (make-list (- l1 l2) -1)))
-	  ((> l2 l1)
-	   (nconc (car v1) (make-list (- l2 l1) -1)))))
+           (nconc (car v2) (make-list (- l1 l2) -1)))
+          ((> l2 l1)
+           (nconc (car v1) (make-list (- l2 l1) -1)))))
   (setq v1 (nconc (car v1) (cadr v1))
-	v2 (nconc (car v2) (cadr v2)))
+        v2 (nconc (car v2) (cadr v2)))
   (while (and v1 v2 (= (car v1) (car v2)))
     (setq v1 (cdr v1)
-	  v2 (cdr v2)))
+          v2 (cdr v2)))
   (if v1
       (if v2
-	  (funcall pred (car v1) (car v2))
-	(funcall pred v1 -1))
+          (funcall pred (car v1) (car v2))
+        (funcall pred v1 -1))
     (if v2
-	(funcall pred -1 v2)
+        (funcall pred -1 v2)
       (funcall pred 0 0))))
 
 (defun vcomp-max (version &rest versions)
@@ -157,29 +157,29 @@ is non-nil in which case nil is returned."
   "Normalize VERSION which has to be a valid version string."
   (if (string-match vcomp--regexp version)
       (let ((num (match-string 2 version))
-	    (alp (match-string 3 version))
-	    (tag (match-string 4 version))
-	    (tnm (match-string 5 version))
-	    (rev (match-string 6 version)))
-	(concat (save-match-data
-		  (replace-regexp-in-string "[-_]" "." num))
-		(when alp
-		  (downcase alp))
-		(when tag
-		  (concat "_" (downcase tag)))
-		(match-string 5 version)
-		(when rev
-		  (concat "-r" rev))))
+            (alp (match-string 3 version))
+            (tag (match-string 4 version))
+            (tnm (match-string 5 version))
+            (rev (match-string 6 version)))
+        (concat (save-match-data
+                  (replace-regexp-in-string "[-_]" "." num))
+                (when alp
+                  (downcase alp))
+                (when tag
+                  (concat "_" (downcase tag)))
+                (match-string 5 version)
+                (when rev
+                  (concat "-r" rev))))
     (error "%S isn't a valid version string" version)))
 
 ;;; Prefixed Versions.
 
 (defun vcomp--prefix-regexp (&optional name)
   (concat "^\\(?:\\(?:"
-	  (when name
-	    (format "%s\\|" name))
-	  "v\\(?:ersion\\)?\\|r\\(?:elease\\)"
-	  "?\\)[-_]?\\)?"))
+          (when name
+            (format "%s\\|" name))
+          "v\\(?:ersion\\)?\\|r\\(?:elease\\)"
+          "?\\)[-_]?\\)?"))
 
 (defun vcomp-prefixed-version-p (string &optional prefix)
   "Return non-nil if STRING is a valid but possibly prefixed version string.
@@ -199,11 +199,14 @@ case STRING is matched against:
 
   (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))"
   (when (string-match (concat (if (and prefix (string-match-p "^^" prefix))
-				  prefix
-				(vcomp--prefix-regexp prefix))
-			      (substring vcomp--regexp 1))
-		      string)
+                                  prefix
+                                (vcomp--prefix-regexp prefix))
+                              (substring vcomp--regexp 1))
+                      string)
     (vcomp-normalize (match-string 1 string))))
 
 (provide 'vcomp)
+;; Local Variables:
+;; indent-tabs-mode: nil
+;; End:
 ;;; vcomp.el ends here
