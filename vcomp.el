@@ -1,10 +1,10 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008-2011  Jonas Bernoulli
+;; Copyright (C) 2008-2012  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Version: 0.2.0
+;; Version: 0.2.1
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
@@ -42,6 +42,23 @@
 ;;   versions of Emacs.
 ;; - `package.el' also contains some version handling code which this
 ;;   package was originally based on.
+
+;; **************************** WARNING ****************************
+;; *                                                               *
+;; *  This package still functions properly and ISN'T OBSOLETE     *
+;; *  but it is NO LONGER USED by the author.                      *
+;; *                                                               *
+;; *  It was written for the Emacsmirror because there are many    *
+;; *  packages that use version strings to crazy for the tools     *
+;; *  mentioned above.  I have since decided that it's not worth   *
+;; *  trying to parse every single imaginable way some confused    *
+;; *  mind might define a version string.  Therefor I now use the  *
+;; *  builtin tools instead.                                       *
+;; *                                                               *
+;; *  If you are interested feel free to adopt it - orphans lead   *
+;; *  a sad live.                                                  *
+;; *                                                               *
+;; *****************************************************************
 
 ;;; Code:
 
