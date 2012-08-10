@@ -25,40 +25,75 @@
 
 ;;; Commentary:
 
-;; Compare version strings.  What is a valid version string is defined
-;; jointly by the regular expression stored in variable `vcomp--regexp'
-;; and the function `vcomp--intern'.
+;; Compare version strings.
 
-;; Even crazy version strings like "0.11a_rc3-r1" are supported.  But
-;; note that you shouldn't go crazy just because you can and that the
-;; \"-rN\" suffix while valid really is reserved for package maintainers
-;; like ELPA or the Emacsmirror and should not be used by library authors.
+;; Similar functionality is available in Emacs; see `version<' and
+;; friends defined in `subr.el'.  I was going to deprecate this
+;; library but when I tried the built-in functions once more it turned
+;; out they are lacking in several ways.  Most importantly this
+;; library can parse more version strings and doesn't treat certain
+;; version strings as equal that are not actually equal.
 
-;; Some related (or alternative) libraries and functions:
+;; What is a valid version string is defined jointly by the regular
+;; expression stored in variable `vcomp--regexp' and the function
+;; `vcomp--intern' and best explained with an example.
 ;;
-;; - `version<' and related functions defined in `subr.el' distributed
-;;   with Emacs, or stand-alone as `versions.el'.
-;; - `inversion' which is part of Cedet and therefor included in recent
-;;   versions of Emacs.
-;; - `package.el' also contains some version handling code which this
-;;   package was originally based on.
-
-;; **************************** WARNING ****************************
-;; *                                                               *
-;; *  This package still functions properly and ISN'T OBSOLETE     *
-;; *  but it is NO LONGER USED by the author.                      *
-;; *                                                               *
-;; *  It was written for the Emacsmirror because there are many    *
-;; *  packages that use version strings to crazy for the tools     *
-;; *  mentioned above.  I have since decided that it's not worth   *
-;; *  trying to parse every single imaginable way some confused    *
-;; *  mind might define a version string.  Therefor I now use the  *
-;; *  builtin tools instead.                                       *
-;; *                                                               *
-;; *  If you are interested feel free to adopt it - orphans lead   *
-;; *  a sad live.                                                  *
-;; *                                                               *
-;; *****************************************************************
+;; Function `vcomp--intern' converts a string to the internal format
+;; as follows:
+;;
+;;   0.11a_rc3-r1 => ((0 11) (97 103 3 1))
+;;
+;;   0.11         => (0 11)  valid separators are ._-
+;;       a        => 97      either 0 or the ascii code of the lower
+;;                           case letter (A is equal to a)
+;;        _rc     => 103     100 alpha
+;;                           101 beta
+;;                           102 pre
+;;                           103 rc
+;;                           104 --
+;;                           105 p
+;;                           _ is optional, - is also valid
+;;           3    => 3       if missing 0 is used
+;;            -r1 => 1       there are no variations of -rN
+;;
+;; A less crazy version string would be converted like this:
+;;
+;;   1.0.3 => ((1 0 3) (0 104 0 0))
+;;
+;; The internal format is only intended for ... internal use but if
+;; you are wondering why a flat list does not do:
+;;
+;;   1.97 => (1 97)
+;;   1a   => (1 97)
+;;
+;; There are other ways of dealing with this and similar problems.
+;; E.g. the built-in functions treat 1 and 1.0 as equal and only
+;; support pre-releases of sorts but not patches ("-pN") like this
+;; library does.  Having an internal format that doesn't make any
+;; compromises but has to be explained seems like the better option.
+;;
+;; Functions `vcomp-compare' and `vcomp--compare-interned' can be used
+;; to compare two versions using any predicate that can compare
+;; integers.
+;;
+;; When comparing two versions whose numeric parts have different
+;; lengths `vcomp--compare-interned' fills in -1.
+;;
+;;   1.0    => ((1 0)...)   => (1 0 -1)
+;;   1.0.0  => ((1 0 0)...) => (1 0  0)
+;;
+;; So 1.0.0 is greater than 1.0 and 1.0 is greater than 1.  If you
+;; don't want that set `vcomp--fill-number' to 0.
+;;
+;; This filling has to happen in `vcomp--compare-interned' as we don't
+;; know the length of the other versions when `vcomp--intern' is called.
+;;
+;; Function `vcomp-normalize' can be used to normalize a version string.
+;;
+;;   0-11A-Alpha0-r1 => 0.11a_alpha-r1
+;;
+;; That's the way I like my version strings; if you would like this to
+;; be customizable please let me know.
 
 ;;; Code:
 
@@ -85,7 +120,7 @@ information.")
   (when (string-match-p vcomp--regexp string) t))
 
 (defun vcomp--intern (version &optional prefix noerror)
-  "Convert version string VERSION to a list of two lists of integers.
+  "Convert version string VERSION to the internal format.
 
 If optional PREFIX is non-nil it is a partial regular expression which
 matches a prefix VERSION may (but does not need to) begin with, like e.g.
@@ -93,7 +128,10 @@ a package name.  PREFIX must not begin with ^ (unless you want to
 literally match it) or contain any non-shy grouping constructs.
 
 If VERSION cannot be converted an error is raised unless optional NOERROR
-is non-nil in which case nil is returned."
+is non-nil in which case nil is returned.
+
+See the library header of `vcomp.el' for more information about
+the internal format."
   (if (string-match (if prefix
                         (concat "^" prefix (substring vcomp--regexp 1))
                       vcomp--regexp)
@@ -195,8 +233,6 @@ is non-nil in which case nil is returned."
                   (concat "-r" rev))))
     (error "%S isn't a valid version string" version)))
 
-;;; Prefixed Versions.
-
 (defun vcomp--prefix-regexp (&optional name)
   (concat "^\\(?:\\(?:"
           (when name
@@ -220,7 +256,9 @@ Otherwise if PREFIX is nil or does not begin with \"^\" the function
 `vcomp--prefix-regexp' is used to create the prefix regexp.  In this
 case STRING is matched against:
 
-  (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))"
+  (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))
+
+This will detect common prefixes like \"v\" or \"revision-\"."
   (when (string-match (concat (if (and prefix (string-match-p "^^" prefix))
                                   prefix
                                 (vcomp--prefix-regexp prefix))
