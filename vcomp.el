@@ -189,7 +189,8 @@ is non-nil in which case nil is returned."
                   (downcase alp))
                 (when tag
                   (concat "_" (downcase tag)))
-                (match-string 5 version)
+                (when (and tnm (not (equal tnm "0")))
+                  tnm)
                 (when rev
                   (concat "-r" rev))))
     (error "%S isn't a valid version string" version)))
