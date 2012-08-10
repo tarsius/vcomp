@@ -75,6 +75,11 @@
           "\\)$")
   "The regular expression used to compare version strings.")
 
+(defvar vcomp--fill-number -1
+  "Integer used for missing positions in numeric part of versions.
+Either -1 or 0.  See the library header of `vcomp.el' for more
+information.")
+
 (defun vcomp-version-p (string)
   "Return t if STRING is a valid version string."
   (when (string-match-p vcomp--regexp string) t))
@@ -132,9 +137,9 @@ is non-nil in which case nil is returned."
   (let ((l1 (length (car v1)))
         (l2 (length (car v2))))
     (cond ((> l1 l2)
-           (nconc (car v2) (make-list (- l1 l2) -1)))
+           (nconc (car v2) (make-list (- l1 l2) vcomp--fill-number)))
           ((> l2 l1)
-           (nconc (car v1) (make-list (- l2 l1) -1)))))
+           (nconc (car v1) (make-list (- l2 l1) vcomp--fill-number)))))
   (setq v1 (nconc (car v1) (cadr v1))
         v2 (nconc (car v2) (cadr v2)))
   (while (and v1 v2 (= (car v1) (car v2)))
