@@ -70,7 +70,7 @@
   (concat "^\\("
           "\\([0-9]+\\(?:[-_.][0-9]+\\)*\\)"
           "\\([a-z]\\)?"
-          "\\(?:_?\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
+          "\\(?:[-_]?\\(alpha\\|beta\\|pre\\|rc\\|p\\)\\([0-9]+\\)?\\)?"
           "\\(?:-r\\([0-9]+\\)\\)?"
           "\\)$")
   "The regular expression used to compare version strings.")
