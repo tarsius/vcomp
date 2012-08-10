@@ -106,7 +106,7 @@ is non-nil in which case nil is returned."
             (tnm (string-to-number (or (match-string 5 version) "0")))
             (rev (string-to-number (or (match-string 6 version) "0"))))
         (list num (nconc (list (if (not alp)
-                                   96
+                                   0
                                  (setq alp (string-to-char alp))
                                  (if (< alp 97)
                                      (+ alp 32)
