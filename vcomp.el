@@ -98,8 +98,6 @@
 
 ;;; Code:
 
-(require 'cl)
-
 ;;; Regular Versions.
 
 (defconst vcomp--regexp
