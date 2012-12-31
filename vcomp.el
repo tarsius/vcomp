@@ -4,7 +4,7 @@
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Created: 20081202
-;; Version: 0.3.0
+;; Version: 0.3.1
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
