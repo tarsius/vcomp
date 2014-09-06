@@ -1,10 +1,8 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008-2012  Jonas Bernoulli
+;; Copyright (C) 2008-2014  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
-;; Created: 20081202
-;; Version: 0.3.1
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
