@@ -135,7 +135,7 @@ the internal format."
                         (concat "^" prefix (substring vcomp--regexp 1))
                       vcomp--regexp)
                     version)
-      (let ((num (mapcar #'string-to-int
+      (let ((num (mapcar #'string-to-number
                          (save-match-data
                            (split-string (match-string 2 version) "[-_.]"))))
             (alp (match-string 3 version))
