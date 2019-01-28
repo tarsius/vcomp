@@ -1,6 +1,6 @@
 ;;; vcomp.el --- compare version strings
 
-;; Copyright (C) 2008-2014  Jonas Bernoulli
+;; Copyright (C) 2008-2014, 2019  Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Homepage: https://github.com/tarsius/vcomp
@@ -95,8 +95,6 @@
 ;; be customizable please let me know.
 
 ;;; Code:
-
-;;; Regular Versions.
 
 (defconst vcomp--regexp
   (concat "^\\("
