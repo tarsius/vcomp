@@ -1,10 +1,12 @@
-;;; vcomp.el --- Compare version strings
+;;; vcomp.el --- Compare version strings  -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2008-2023 Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
+
+;; Package-Requires: ((emacs "24.1"))
 
 ;; SPDX-License-Identifier: GPL-3.0-or-later
 
