@@ -1,25 +1,25 @@
-;;; vcomp.el --- compare version strings
+;;; vcomp.el --- Compare version strings
 
-;; Copyright (C) 2008-2014, 2019  Jonas Bernoulli
+;; Copyright (C) 2008-2023 Jonas Bernoulli
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
 ;; Homepage: https://github.com/tarsius/vcomp
 ;; Keywords: versions
 
-;; This file is not part of GNU Emacs.
+;; SPDX-License-Identifier: GPL-3.0-or-later
 
-;; This file is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation; either version 3, or (at your option)
-;; any later version.
-
+;; This file is free software: you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published
+;; by the Free Software Foundation, either version 3 of the License,
+;; or (at your option) any later version.
+;;
 ;; This file is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 ;; GNU General Public License for more details.
-
+;;
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 ;;; Commentary:
 
@@ -112,7 +112,7 @@ information.")
 
 (defun vcomp-version-p (string)
   "Return t if STRING is a valid version string."
-  (when (string-match-p vcomp--regexp string) t))
+  (and (string-match-p vcomp--regexp string) t))
 
 (defun vcomp--intern (version &optional prefix noerror)
   "Convert version string VERSION to the internal format.
@@ -173,11 +173,11 @@ the internal format."
            (nconc (car v2) (make-list (- l1 l2) vcomp--fill-number)))
           ((> l2 l1)
            (nconc (car v1) (make-list (- l2 l1) vcomp--fill-number)))))
-  (setq v1 (nconc (car v1) (cadr v1))
-        v2 (nconc (car v2) (cadr v2)))
+  (setq v1 (nconc (car v1) (cadr v1)))
+  (setq v2 (nconc (car v2) (cadr v2)))
   (while (and v1 v2 (= (car v1) (car v2)))
-    (setq v1 (cdr v1)
-          v2 (cdr v2)))
+    (setq v1 (cdr v1))
+    (setq v2 (cdr v2)))
   (if v1
       (if v2
           (funcall pred (car v1) (car v2))
@@ -189,24 +189,24 @@ the internal format."
 (defun vcomp-max (version &rest versions)
   "Return largest of all the arguments (which must be version strings)."
   (dolist (elt versions)
-    (when (vcomp-compare elt version '>)
+    (when (vcomp-compare elt version #'>)
       (setq version elt)))
   version)
 
 (defun vcomp-min (version &rest versions)
   "Return smallest of all the arguments (which must be version strings)."
   (dolist (elt versions)
-    (when (vcomp-compare elt version '<)
+    (when (vcomp-compare elt version #'<)
       (setq version elt)))
   version)
 
 (defun vcomp< (v1 v2)
   "Return t if first version string is smaller than second."
-  (vcomp-compare v1 v2 '<))
+  (vcomp-compare v1 v2 #'<))
 
 (defun vcomp> (v1 v2)
   "Return t if first version string is greater than second."
-  (vcomp-compare v1 v2 '>))
+  (vcomp-compare v1 v2 #'>))
 
 (defun vcomp-normalize (version)
   "Normalize VERSION which has to be a valid version string."
@@ -218,20 +218,15 @@ the internal format."
             (rev (match-string 6 version)))
         (concat (save-match-data
                   (replace-regexp-in-string "[-_]" "." num))
-                (when alp
-                  (downcase alp))
-                (when tag
-                  (concat "_" (downcase tag)))
-                (when (and tnm (not (equal tnm "0")))
-                  tnm)
-                (when rev
-                  (concat "-r" rev))))
+                (and alp (downcase alp))
+                (and tag (concat "_" (downcase tag)))
+                (and tnm (not (equal tnm "0")) tnm)
+                (and rev (concat "-r" rev))))
     (error "%S isn't a valid version string" version)))
 
 (defun vcomp--prefix-regexp (&optional name)
   (concat "^\\(?:\\(?:"
-          (when name
-            (format "%s\\|" name))
+          (and name (format "%s\\|" name))
           "v\\(?:ersion\\)?\\|r\\(?:elease\\)"
           "?\\)[-_]?\\)?"))
 
@@ -254,12 +249,12 @@ case STRING is matched against:
   (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))
 
 This will detect common prefixes like \"v\" or \"revision-\"."
-  (when (string-match (concat (if (and prefix (string-match-p "^^" prefix))
-                                  prefix
-                                (vcomp--prefix-regexp prefix))
-                              (substring vcomp--regexp 1))
-                      string)
-    (vcomp-normalize (match-string 1 string))))
+  (and (string-match (concat (if (and prefix (string-match-p "^^" prefix))
+                                 prefix
+                               (vcomp--prefix-regexp prefix))
+                             (substring vcomp--regexp 1))
+                     string)
+       (vcomp-normalize (match-string 1 string))))
 
 (provide 'vcomp)
 ;; Local Variables:
