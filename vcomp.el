@@ -196,6 +196,18 @@ the internal format."
   "Return t if the version string V1 is greater than V2."
   (vcomp-compare v1 v2 #'>))
 
+(defun vcomp= (v1 v2)
+  "Return t if the version string V1 is equal to V2."
+  (vcomp-compare v1 v2 #'=))
+
+(defun vcomp<= (v1 v2)
+  "Return t if the version string V1 is smaller than or equal to V2."
+  (vcomp-compare v1 v2 #'<=))
+
+(defun vcomp>= (v1 v2)
+  "Return t if the version string V1 is greater than or equal to V2."
+  (vcomp-compare v1 v2 #'>=))
+
 (defun vcomp-max (version &rest versions)
   "Return largest of all the arguments (which must be version strings)."
   (dolist (elt versions)
