@@ -188,6 +188,14 @@ the internal format."
         (funcall pred -1 v2)
       (funcall pred 0 0))))
 
+(defun vcomp< (v1 v2)
+  "Return t if first version string is smaller than second."
+  (vcomp-compare v1 v2 #'<))
+
+(defun vcomp> (v1 v2)
+  "Return t if first version string is greater than second."
+  (vcomp-compare v1 v2 #'>))
+
 (defun vcomp-max (version &rest versions)
   "Return largest of all the arguments (which must be version strings)."
   (dolist (elt versions)
@@ -201,14 +209,6 @@ the internal format."
     (when (vcomp-compare elt version #'<)
       (setq version elt)))
   version)
-
-(defun vcomp< (v1 v2)
-  "Return t if first version string is smaller than second."
-  (vcomp-compare v1 v2 #'<))
-
-(defun vcomp> (v1 v2)
-  "Return t if first version string is greater than second."
-  (vcomp-compare v1 v2 #'>))
 
 (defun vcomp-normalize (version)
   "Normalize VERSION which has to be a valid version string."
