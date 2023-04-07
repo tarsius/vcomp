@@ -189,11 +189,11 @@ the internal format."
       (funcall pred 0 0))))
 
 (defun vcomp< (v1 v2)
-  "Return t if first version string is smaller than second."
+  "Return t if the version string V1 is smaller than V2."
   (vcomp-compare v1 v2 #'<))
 
 (defun vcomp> (v1 v2)
-  "Return t if first version string is greater than second."
+  "Return t if the version string V1 is greater than V2."
   (vcomp-compare v1 v2 #'>))
 
 (defun vcomp-max (version &rest versions)
