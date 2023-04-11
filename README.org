@@ -32,7 +32,7 @@ The main difference is that this package also supports
   (version< "1-alpha" "1")      => t
   (vcomp<   "1-alpha" "1")      => t
 
-  ;; "1" has already been released on this is a snaphot of a commit that follows that release.
+  ;; "1" has already been released and this is a snaphot of a commit that follows that release.
   (version< "1" "1-p20230407")  => error
   (vcomp<   "1" "1-p20230407")  => t
 #+end_src
@@ -114,7 +114,7 @@ lengths, ~vcomp--compare-interned~ fills in ~-1~.
 #+end_src
 
 So ~1.0.0~ is greater than ~1.0~, and ~1.0~ is greater than ~1~.  If
-you don't want that set ~vcomp--fill-number~ to ~0~.
+you don't want that, set ~vcomp--fill-number~ to ~0~.
 
 This filling has to happen in ~vcomp--compare-interned~, because we
 don't know the length of the other versions, when ~vcomp--intern~ is
