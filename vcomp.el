@@ -177,8 +177,8 @@ The returned value is the normalized part of STRING which is a valid
 version string.
 
 If optional PREFIX is non-nil it has to be a string.  If it begin with
-\"^\" it is considered a partial regexp.  It must not end with \"$\" and may
-only contain *shy* groups.  In this case STRING is matched against:
+\"^\" it is considered a partial regexp.  It must not end with \"$\" and
+may only contain *shy* groups.  In this case STRING is matched against:
 
   (concat PREFIX (substring vcomp--regexp 1))
 
@@ -188,7 +188,9 @@ case STRING is matched against:
 
   (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))
 
-This will detect common prefixes like \"v\" or \"revision-\"."
+This matches if STRING is a valid version string prefixed with \"v\",
+\"version\", \"r\", \"release\" or (provided it non-nil) PREFIX, optionally
+separated from the version with \"-\" or \"_\"."
   (and (string-match (concat (if (and prefix (string-prefix-p "^" prefix))
                                  prefix
                                (vcomp--prefix-regexp prefix))
