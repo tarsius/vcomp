@@ -1,6 +1,6 @@
 ;;; vcomp.el --- Compare version strings  -*- lexical-binding:t -*-
 
-;; Copyright (C) 2008-2024 Jonas Bernoulli
+;; Copyright (C) 2008-2026 Jonas Bernoulli
 ;; Copyright (C) 2007-2008 Free Software Foundation, Inc.
 
 ;; Author: Jonas Bernoulli <jonas@bernoul.li>
