@@ -42,8 +42,7 @@
 
 (defvar vcomp--fill-number -1
   "Integer used for missing positions in numeric part of versions.
-Either -1 or 0.  See the library header of `vcomp.el' for more
-information.")
+Either -1 or 0.  See the README.org for more information.")
 
 (defun vcomp-version-p (string)
   "Return t if STRING is a valid version string."
@@ -60,8 +59,7 @@ literally match it) or contain any non-shy grouping constructs.
 If VERSION cannot be converted an error is raised unless optional NOERROR
 is non-nil in which case nil is returned.
 
-See the library header of `vcomp.el' for more information about
-the internal format."
+See the README.org for more information about the internal format."
   (cond
     ((string-match (if prefix
                        (concat "^" prefix (substring vcomp--regexp 1))
