@@ -150,17 +150,19 @@ See the README.org for more information about the internal format."
 
 (defun vcomp-max (version &rest versions)
   "Return largest of all the arguments (which must be version strings)."
-  (dolist (elt versions)
-    (when (vcomp-compare elt version #'>)
-      (setq version elt)))
-  version)
+  (let ((version (vcomp--intern version)))
+    (dolist (v (mapcar #'vcomp--intern versions))
+      (when (vcomp--compare-interned v version #'>)
+        (setq version v)))
+    (vcomp--string version)))
 
 (defun vcomp-min (version &rest versions)
   "Return smallest of all the arguments (which must be version strings)."
-  (dolist (elt versions)
-    (when (vcomp-compare elt version #'<)
-      (setq version elt)))
-  version)
+  (let ((version (vcomp--intern version)))
+    (dolist (v (mapcar #'vcomp--intern versions))
+      (when (vcomp-compare v version #'<)
+        (setq version v)))
+    (vcomp--string version)))
 
 (defun vcomp-normalize (version)
   "Normalize VERSION which has to be a valid version string."
