@@ -41,7 +41,7 @@
   "The regular expression used to compare version strings.")
 
 (defvar vcomp--fill-number 0
-  "Integer used for missing positions in numeric part of versions.
+  "Integer used for missing components in numeric part of versions.
 Either -1 or 0.  See the README.org for more information.")
 
 (defun vcomp-version-p (string)
@@ -51,13 +51,14 @@ Either -1 or 0.  See the README.org for more information.")
 (defun vcomp--intern (version &optional prefix noerror)
   "Convert version string VERSION to the internal format.
 
-If optional PREFIX is non-nil it is a partial regular expression which
-matches a prefix VERSION may (but does not need to) begin with, like e.g.
-a package name.  PREFIX must not begin with ^ (unless you want to
-literally match it) or contain any non-shy grouping constructs.
+If optional PREFIX is non-nil, it is a partial regular expression
+which matches a prefix VERSION may (but does not need to) begin with,
+such as the name of the package or \"v\".  PREFIX must not begin with
+\"^\" (unless you want to literally match that), or contain any non-shy
+grouping constructs.
 
-If VERSION cannot be converted an error is raised unless optional NOERROR
-is non-nil in which case nil is returned.
+If VERSION cannot be converted an error is raised, unless optional
+NOERROR is non-nil in which case nil is returned.
 
 See the README.org for more information about the internal format."
   (cond
@@ -150,7 +151,7 @@ See the README.org for more information about the internal format."
   (vcomp-compare v1 v2 #'>=))
 
 (defun vcomp-max (version &rest versions)
-  "Return largest of all the arguments (which must be version strings)."
+  "Return largest of all the arguments, which must be version strings."
   (let ((version (vcomp--intern version)))
     (dolist (v (mapcar #'vcomp--intern versions))
       (when (vcomp--compare-interned v version #'>)
@@ -158,7 +159,7 @@ See the README.org for more information about the internal format."
     (vcomp--string version)))
 
 (defun vcomp-min (version &rest versions)
-  "Return smallest of all the arguments (which must be version strings)."
+  "Return smallest of all the arguments, which must be version strings."
   (let ((version (vcomp--intern version)))
     (dolist (v (mapcar #'vcomp--intern versions))
       (when (vcomp-compare v version #'<)
@@ -166,7 +167,7 @@ See the README.org for more information about the internal format."
     (vcomp--string version)))
 
 (defun vcomp-normalize (version)
-  "Normalize VERSION which has to be a valid version string."
+  "Normalize VERSION, which has to be a valid version string."
   (if (string-match vcomp--regexp version)
       (let ((num (match-string 2 version))
             (alp (match-string 3 version))
@@ -191,7 +192,7 @@ See the README.org for more information about the internal format."
 (defun vcomp-prefixed-version-p (string &optional prefix)
   "Return non-nil if STRING is a valid but possibly prefixed version string.
 
-The returned value is the normalized part of STRING which is a valid
+The returned value is the normalized part of STRING, which is a valid
 version string.
 
 If optional PREFIX is non-nil it has to be a string.  If it begin with
@@ -200,7 +201,7 @@ may only contain *shy* groups.  In this case STRING is matched against:
 
   (concat PREFIX (substring vcomp--regexp 1))
 
-Otherwise if PREFIX is nil or does not begin with \"^\" the function
+Otherwise, if PREFIX is nil or does not begin with \"^\", the function
 `vcomp--prefix-regexp' is used to create the prefix regexp.  In this
 case STRING is matched against:
 
