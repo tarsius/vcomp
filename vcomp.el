@@ -110,6 +110,7 @@ See the README.org for more information about the internal format."
                            pred))
 
 (defun vcomp--compare-interned (v1 v2 pred)
+  "Compare version lists V1 and V2 using PRED."
   (pcase-let*
       ((`(,n1 ,p1) v1)
        (`(,n2 ,p2) v2)
@@ -181,6 +182,7 @@ See the README.org for more information about the internal format."
     (error "%S isn't a valid version string" version)))
 
 (defun vcomp--prefix-regexp (&optional name)
+  "Used by `vcomp-prefixed-version-p', which see."
   (concat "^\\(?:\\(?:"
           (and name (format "%s\\|" name))
           "v\\(?:ersion\\)?\\|r\\(?:elease\\)"
