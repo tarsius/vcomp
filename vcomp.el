@@ -62,32 +62,33 @@ is non-nil in which case nil is returned.
 
 See the library header of `vcomp.el' for more information about
 the internal format."
-  (if (string-match (if prefix
-                        (concat "^" prefix (substring vcomp--regexp 1))
-                      vcomp--regexp)
-                    version)
-      (let ((num (mapcar #'string-to-number
-                         (save-match-data
-                           (split-string (match-string 2 version) "[-_.]"))))
-            (alp (match-string 3 version))
-            (tag (match-string 4 version))
-            (tnm (string-to-number (or (match-string 5 version) "0")))
-            (rev (string-to-number (or (match-string 6 version) "0"))))
-        (list num (nconc (list (if (not alp)
-                                   0
-                                 (setq alp (string-to-char alp))
-                                 (if (< alp 97)
-                                     (+ alp 32)
-                                   alp)))
-                         (pcase tag
-                           ("alpha" (list  100 tnm))
-                           ("beta"  (list  101 tnm))
-                           ("pre"   (list  102 tnm))
-                           ("rc"    (list  103 tnm))
-                           ('nil    (list  104 tnm))
-                           ("p"     (list  105 tnm)))
-                         (list rev))))
-    (unless noerror
+  (cond
+    ((string-match (if prefix
+                       (concat "^" prefix (substring vcomp--regexp 1))
+                     vcomp--regexp)
+                   version)
+     (let ((num (mapcar #'string-to-number
+                        (save-match-data
+                          (split-string (match-string 2 version) "[-_.]"))))
+           (alp (match-string 3 version))
+           (tag (match-string 4 version))
+           (tnm (string-to-number (or (match-string 5 version) "0")))
+           (rev (string-to-number (or (match-string 6 version) "0"))))
+       (list num (nconc (list (if (not alp)
+                                  0
+                                (setq alp (string-to-char alp))
+                                (if (< alp 97)
+                                    (+ alp 32)
+                                  alp)))
+                        (pcase tag
+                          ("alpha" (list  100 tnm))
+                          ("beta"  (list  101 tnm))
+                          ("pre"   (list  102 tnm))
+                          ("rc"    (list  103 tnm))
+                          ('nil    (list  104 tnm))
+                          ("p"     (list  105 tnm)))
+                        (list rev)))))
+     ((not noerror)
       (error "%S isn't a valid version string" version))))
 
 (defun vcomp-compare (v1 v2 pred)
@@ -197,8 +198,10 @@ This will detect common prefixes like \"v\" or \"revision-\"."
                      string)
        (vcomp-normalize (match-string 1 string))))
 
+;;; _
 (provide 'vcomp)
 ;; Local Variables:
 ;; indent-tabs-mode: nil
+;; lisp-indent-local-overrides: ((cond . 0))
 ;; End:
 ;;; vcomp.el ends here
