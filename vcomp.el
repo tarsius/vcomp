@@ -190,7 +190,7 @@ case STRING is matched against:
   (concat (vcomp--prefix-regexp PREFIX) (substring vcomp--regexp 1))
 
 This will detect common prefixes like \"v\" or \"revision-\"."
-  (and (string-match (concat (if (and prefix (string-match-p "^^" prefix))
+  (and (string-match (concat (if (and prefix (string-prefix-p "^" prefix))
                                  prefix
                                (vcomp--prefix-regexp prefix))
                              (substring vcomp--regexp 1))
