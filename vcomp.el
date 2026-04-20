@@ -79,18 +79,13 @@ the internal format."
                                  (if (< alp 97)
                                      (+ alp 32)
                                    alp)))
-                         (cond ((equal tag "alpha")
-                                (list  100 tnm))
-                               ((equal tag "beta")
-                                (list  101 tnm))
-                               ((equal tag "pre")
-                                (list  102 tnm))
-                               ((equal tag "rc")
-                                (list  103 tnm))
-                               ((equal tag nil)
-                                (list  104 tnm))
-                               ((equal tag "p")
-                                (list  105 tnm)))
+                         (pcase tag
+                           ("alpha" (list  100 tnm))
+                           ("beta"  (list  101 tnm))
+                           ("pre"   (list  102 tnm))
+                           ("rc"    (list  103 tnm))
+                           ('nil    (list  104 tnm))
+                           ("p"     (list  105 tnm)))
                          (list rev))))
     (unless noerror
       (error "%S isn't a valid version string" version))))
@@ -113,13 +108,12 @@ the internal format."
   (while (and v1 v2 (= (car v1) (car v2)))
     (setq v1 (cdr v1))
     (setq v2 (cdr v2)))
-  (if v1
-      (if v2
-          (funcall pred (car v1) (car v2))
-        (funcall pred v1 -1))
-    (if v2
-        (funcall pred -1 v2)
-      (funcall pred 0 0))))
+  (pcase (list (and v1 t)
+               (and v2 t))
+    (`(t     t) (funcall pred (car v1) (car v2)))
+    (`(t   nil) (funcall pred v1 -1))
+    (`(nil   t) (funcall pred -1 v2))
+    (`(nil nil) (funcall pred 0 0))))
 
 (defun vcomp< (v1 v2)
   "Return t if the version string V1 is smaller than V2."
