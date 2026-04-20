@@ -89,6 +89,20 @@ See the README.org for more information about the internal format."
      ((not noerror)
       (error "%S isn't a valid version string" version))))
 
+(defun vcomp--string (version)
+  "Convert list VERSION from the internal format to a version string."
+  (pcase-let ((`(,num (,alp ,tag ,tnm ,rev)) version))
+    (concat (mapconcat #'number-to-string num ".")
+            (and (not (zerop alp)) (char-to-string alp))
+            (pcase tag
+              (100 "_alpha")
+              (101 "_beta")
+              (102 "_pre")
+              (103 "_rc")
+              (105 "_p"))
+            (and (not (zerop tnm)) (number-to-string tnm))
+            (and (not (zerop rev)) (format "-r%s" rev)))))
+
 (defun vcomp-compare (v1 v2 pred)
   "Compare version strings V1 and V2 using PRED."
   (vcomp--compare-interned (vcomp--intern v1)
