@@ -40,7 +40,7 @@
           "\\)$")
   "The regular expression used to compare version strings.")
 
-(defvar vcomp--fill-number -1
+(defvar vcomp--fill-number 0
   "Integer used for missing positions in numeric part of versions.
 Either -1 or 0.  See the README.org for more information.")
 
