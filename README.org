@@ -46,7 +46,7 @@ are still available though.
 
 **** Other differences
 
-There are other difference.  In some cases this package is more
+There are other differences.  In some cases this package is more
 flexible, in other cases Emacs' implementation is.  I don't think
 Emacs' implementation should be changed.
 
