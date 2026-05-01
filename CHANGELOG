@@ -1,0 +1,13 @@
+# -*- mode: org -*-
+* v1.2.0    2026-05-01
+
+- ~N.0~ is now treated as equal to ~N~.  This can be reverted by setting
+  ~vcomp--fill-number~ to ~-1~.
+
+* v1.1.0    2024-03-02
+
+- Added functions ~vcomp=~, ~vcomp<=~ and ~vcomp>=~.
+
+* v1.0.0    2019-01-28
+
+First stable release.
